@@ -1,11 +1,11 @@
 import numpy as np
 
-# Dữ liệu support vectors, nhãn, và các hệ số alpha
+# Input data
 support_vectors = np.array(
     [[4, 2.9], [2.5, 1], [3.5, 4], [2, 2.1]]  # x1  # x4  # x7  # x9
 )
 y_support = np.array([1, -1, 1, -1])  # Nhãn của các support vectors
-alpha_support = np.array([0.414, 0.018, 0.018, 0.414])  # Giá trị alpha
+alpha_support = np.array([0.414, 0.018, 0.018, 0.414])  # Giá trị alpha (chỉ lấy những giá trị alpha khác 0 tương ứng với các support vectors)
 
 # Tính vector trọng số w = sum(alpha_i * y_i * x_i) qua support vectors
 w = np.sum(alpha_support[:, None] * y_support[:, None] * support_vectors, axis=0)
