@@ -95,8 +95,7 @@ for i, x in enumerate(data):
     print(f"Predict: {prediction}")
 
 plt.plot(x_vals, y_vals, label="Discriminant Line")
-plt.xlabel("x1")
-plt.ylabel("x2")
+plt.grid(True)
 plt.legend()
-plt.title("LDA")
+plt.title("Linear Discriminant Line")
 plt.show()

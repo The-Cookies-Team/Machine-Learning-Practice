@@ -1,40 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.svm import SVC
 
-# Input data
 class1 = np.array([[2, 3], [3, 3], [3, 4], [5, 8], [7, 7]])  # Triangles
 class2 = np.array([[5, 4], [6, 5], [7, 4], [7, 5], [9, 4], [8, 2]])  # Circles
+X = np.vstack([class1, class2])
+y = np.concatenate([np.zeros(len(class1)), np.ones(len(class2))])
 
-mu_class1 = np.mean(class1, axis=0)
-mu_class2 = np.mean(class2, axis=0)
-
-S_class1 = sum(
-    (x - mu_class1).reshape(-1, 1) @ (x - mu_class1).reshape(1, -1) for x in class1
-)
-S_class2 = sum(
-    (x - mu_class2).reshape(-1, 1) @ (x - mu_class2).reshape(1, -1) for x in class2
-)
-S = S_class1 + S_class2
-
-mean_diff = mu_class1 - mu_class2
-
-epsilon = 1e-5
-S_regularized = S + epsilon * np.eye(S.shape[0])
-
-w = np.linalg.solve(S_regularized, mu_class1 - mu_class2)
-w0 = -0.5 * (w.T @ (mu_class1 + mu_class2))
+svm = SVC(kernel="linear", C=1.0)
+svm.fit(X, y)
 
 plt.figure(figsize=(8, 8))
-plt.scatter(class1[:, 0], class1[:, 1], color="blue", marker="^", label="Class 1")
-plt.scatter(class2[:, 0], class2[:, 1], color="red", marker="o", label="Class 2")
+plt.scatter(
+    class1[:, 0], class1[:, 1], color="blue", marker="^", label="Class 1 (Triangles)"
+)
+plt.scatter(
+    class2[:, 0], class2[:, 1], color="red", marker="o", label="Class 2 (Circles)"
+)
 
-x_values = np.linspace(0, 10, 100)
-y_values = -(w[0] * x_values + w0) / w[1]
-plt.plot(x_values, y_values, color="green", label="Linear Discriminant Line")
+x_values = np.linspace(min(X[:, 0]), max(X[:, 0]), 100)
+y_values = -(svm.coef_[0, 0] * x_values + svm.intercept_[0]) / svm.coef_[0, 1]
 
-plt.xlabel("X-axis")
-plt.ylabel("Y-axis")
-plt.title("Linear Discriminant Analysis")
+plt.plot(x_values, y_values, color="green", label="SVM Line")
+plt.title("Best Discriminant Line")
+plt.grid(True)
 plt.legend()
-plt.grid()
 plt.show()
