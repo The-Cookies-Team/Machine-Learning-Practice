@@ -1,59 +1,58 @@
 import numpy as np
-from scipy import linalg
+from scipy.linalg import eigh
+
+# Given data
+points = np.array([[2.5, 1], [3.5, 4], [2, 2.1]])
+sigma_squared = 5
+sigma = np.sqrt(sigma_squared)
 
 
-def gaussian_kernel(x1, x2, sigma_squared=5):
-    return np.exp(-np.sum((x1 - x2) ** 2) / (2 * sigma_squared))
+# Gaussian kernel function
+def gaussian_kernel(x_i, x_j, sigma_squared):
+    distance_squared = np.sum((x_i - x_j) ** 2)
+    return np.exp(-distance_squared / (2 * sigma_squared))
 
 
-def main():
-    # Given points
-    x1 = np.array([2.5, 1])
-    x2 = np.array([3.5, 4])
-    x3 = np.array([2, 2.1])
-    points = [x1, x2, x3]
-
-    print("Q4 Solutions:")
-    print("\n(a) Computing the Gaussian kernel matrix (σ²=5):")
-
-    # Calculate kernel matrix
+# Compute the kernel matrix
+def compute_kernel_matrix(points, sigma_squared):
     n = len(points)
     K = np.zeros((n, n))
+
     for i in range(n):
         for j in range(n):
-            K[i, j] = gaussian_kernel(points[i], points[j])
+            K[i, j] = gaussian_kernel(points[i], points[j], sigma_squared)
 
-    print("\nKernel matrix K:")
-    print(K)
-
-    print("\n(b) Computing distance of φ(x1) from the mean in feature space:")
-
-    # Calculate distance using kernel trick
-    # ||φ(x1) - μ||² = k(x1,x1) - 2/n Σk(x1,xi) + 1/n² ΣΣk(xi,xj)
-    k11 = K[0, 0]
-    sum_k1i = np.sum(K[0, :])
-    sum_kij = np.sum(K)
-
-    distance_squared = k11 - (2 / n) * sum_k1i + (1 / n**2) * sum_kij
-    distance = np.sqrt(abs(distance_squared))  # abs to handle numerical errors
-
-    print(f"\nDistance = {distance:.6f}")
-
-    print("\n(c) Computing dominant eigenvector and eigenvalue:")
-
-    # Compute eigenvalues and eigenvectors
-    eigenvals, eigenvecs = linalg.eigh(K)
-
-    # Get dominant (largest) eigenvalue and corresponding eigenvector
-    dominant_eigenval = eigenvals[-1]
-    dominant_eigenvec = eigenvecs[:, -1]
-
-    print("\nDominant eigenvalue:")
-    print(f"{dominant_eigenval:.6f}")
-
-    print("\nDominant eigenvector:")
-    print(dominant_eigenvec)
+    return K
 
 
-if __name__ == "__main__":
-    main()
+# Compute the kernel matrix
+K = compute_kernel_matrix(points, sigma_squared)
+print("Kernel Matrix:\n", K)
+
+
+# Compute the distance of phi(x1) from the mean in feature space
+def distance_from_mean(K):
+    n = K.shape[0]
+    mean_K = np.sum(K, axis=0) / n
+    distance_squared = K[0, 0] - (2 / n) * np.sum(K[0, :]) + (1 / (n**2)) * np.sum(K)
+    return np.sqrt(distance_squared)
+
+
+distance_phi_x1 = distance_from_mean(K)
+print("\nDistance of phi(x1) from the mean in feature space:", distance_phi_x1)
+
+
+# Compute the dominant eigenvector and eigenvalue of the kernel matrix
+def dominant_eigenvector(K):
+    # Use `eigh` to get eigenvalues and eigenvectors
+    # `eigh` sorts eigenvalues in ascending order, so the last one is the largest
+    eigenvalues, eigenvectors = eigh(K)
+    dominant_eigenvalue = eigenvalues[-1]
+    dominant_eigenvector = eigenvectors[:, -1]
+    return dominant_eigenvalue, dominant_eigenvector
+
+
+# Calculate dominant eigenvalue and eigenvector
+dominant_eigenvalue, dominant_eigenvector = dominant_eigenvector(K)
+print("\nDominant Eigenvalue:", dominant_eigenvalue)
+print("Dominant Eigenvector:", dominant_eigenvector)
