@@ -26,11 +26,10 @@ margin = 1 / np.linalg.norm(w)
 # Điểm z cần phân loại
 z = np.array([3, 3])
 h_z = np.dot(w, z) + b
-classification = 1 if h_z > 0 else -1
+classification = "Class +1" if h_z > 0 else "Class -1"
 
 
-# In ra kết quả rõ ràng
-print(f"\n(a) Hyperplane h(x) = {w[0]:.4f}*x1 + {w[1]:.4f}*x2 + ({b:.4f})")
+print(f"\n(a) Hyperplane h(x) = {w[0]}*x1 + {w[1]}*x2 + ({b})")
 print("Vector w:", w)
 print("Bias b:", b)
 print("\n(b) Distance of x6 from hyperplane:", distance_x6)
@@ -40,4 +39,4 @@ print(
     "TRUE" if distance_x6 < margin else "FALSE",
 )
 print("\n(c) Value of h(z):", h_z)
-print("Class:", classification)
+print("Classification: ", classification)

@@ -1,36 +1,18 @@
 import numpy as np
-from scipy.linalg import eigh
 
-# Given data
-points = np.array([[2.5, 1], [3.5, 4], [2, 2.1]])
-sigma_squared = 5
-sigma = np.sqrt(sigma_squared)
+# Input data
+x1 = np.array([2.5, 1])
+x2 = np.array([3.5, 4])
+x3 = np.array([2, 2.1])
 
-
-# Gaussian kernel function
-def gaussian_kernel(x_i, x_j, sigma_squared):
-    distance_squared = np.sum((x_i - x_j) ** 2)
-    return np.exp(-distance_squared / (2 * sigma_squared))
+points = np.array([x1, x2, x3])
 
 
-# Compute the kernel matrix
-def compute_kernel_matrix(points, sigma_squared):
-    n = len(points)
-    K = np.zeros((n, n))
-
-    for i in range(n):
-        for j in range(n):
-            K[i, j] = gaussian_kernel(points[i], points[j], sigma_squared)
-
-    return K
+def gaussian_kernel(x_i, x_j, sigma2):
+    diff = x_i - x_j
+    return np.exp(-np.dot(diff, diff) / (2 * sigma2))
 
 
-# Compute the kernel matrix
-K = compute_kernel_matrix(points, sigma_squared)
-print("Kernel Matrix:\n", K)
-
-
-# Compute the distance of phi(x1) from the mean in feature space
 def distance_from_mean(K):
     n = K.shape[0]
     mean_K = np.sum(K, axis=0) / n
@@ -38,21 +20,28 @@ def distance_from_mean(K):
     return np.sqrt(distance_squared)
 
 
-distance_phi_x1 = distance_from_mean(K)
-print("\nDistance of phi(x1) from the mean in feature space:", distance_phi_x1)
+sigma2 = 5
+n = len(points)
+kernel_matrix = np.zeros((n, n))
 
+for i in range(n):
+    for j in range(n):
+        kernel_matrix[i, j] = gaussian_kernel(points[i], points[j], sigma2)
 
-# Compute the dominant eigenvector and eigenvalue of the kernel matrix
-def dominant_eigenvector(K):
-    # Use `eigh` to get eigenvalues and eigenvectors
-    # `eigh` sorts eigenvalues in ascending order, so the last one is the largest
-    eigenvalues, eigenvectors = eigh(K)
-    dominant_eigenvalue = eigenvalues[-1]
-    dominant_eigenvector = eigenvectors[:, -1]
-    return dominant_eigenvalue, dominant_eigenvector
+print("\n(a) Gaussian Kernel Matrix:")
+print(kernel_matrix)
 
+mean_feature_space = np.mean(kernel_matrix, axis=0)
 
-# Calculate dominant eigenvalue and eigenvector
-dominant_eigenvalue, dominant_eigenvector = dominant_eigenvector(K)
-print("\nDominant Eigenvalue:", dominant_eigenvalue)
+distance_phi_x1 = distance_from_mean(kernel_matrix)
+
+print("\n(b) Distance of φ(x1) from the mean in feature space:")
+print(distance_phi_x1)
+
+eigenvalues, eigenvectors = np.linalg.eig(kernel_matrix)
+dominant_eigenvalue = np.max(eigenvalues)
+dominant_eigenvector = eigenvectors[:, np.argmax(eigenvalues)]
+
+print("\n(c) Dominant Eigenvalue and Eigenvector:")
+print("Dominant Eigenvalue:", dominant_eigenvalue)
 print("Dominant Eigenvector:", dominant_eigenvector)
