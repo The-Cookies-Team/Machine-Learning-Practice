@@ -17,13 +17,13 @@ def compute_between_class_scatter(mu_plus, mu_minus):
 
 
 def compute_within_class_scatter(data, labels, means):
-    S = np.zeros((2, 2))
+    S_matrices = {}
     for label in np.unique(labels):
         class_data = data[labels == label]
         mu = means[label]
         diff = class_data - mu
-        S += diff.T @ diff
-    return S
+        S_matrices[label] = diff.T @ diff
+    return S_matrices
 
 
 def find_best_direction(S, mean_diff):
@@ -51,7 +51,8 @@ mu_plus = means[1]
 mu_minus = means[-1]
 B = compute_between_class_scatter(mu_plus, mu_minus)
 
-S = compute_within_class_scatter(data, labels, means)
+S_matrices = compute_within_class_scatter(data, labels, means)
+S = S_matrices[1] + S_matrices[-1]
 
 mean_diff = mu_plus - mu_minus
 w = find_best_direction(S, mean_diff)
@@ -63,6 +64,8 @@ print("\n================= Answers =================\n")
 print(f"μ₊₁ = {mu_plus}")
 print(f"μ₋₁ = {mu_minus}")
 print("\nThe between-class scatter matrix B:\n", B)
+print("\nS₁:\n", S_matrices[1])
+print("\nS₋₁:\n", S_matrices[-1])
 print("\nThe within-class scatter matrix S:\n", S)
 print("\nThe best direction vector w:\n", w)
 print(f"\nThe separation point w₀: {w0}")
