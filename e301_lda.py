@@ -59,7 +59,7 @@ w = find_best_direction(S, mean_diff)
 
 w0 = find_separation_point(w, mu_plus, mu_minus)
 
-print("\n================= Answers =================\n")
+print("\n>>> Answers\n")
 
 print(f"μ₊₁ = {mu_plus}")
 print(f"μ₋₁ = {mu_minus}")
@@ -86,7 +86,7 @@ def classify(x, w, w0):
     return np.sign(w.T @ x + w0)
 
 
-print("\n============ Classification testing ============")
+print("\n>>> Classification testing")
 
 for i, x in enumerate(data):
     prediction = classify(x, w, w0)
