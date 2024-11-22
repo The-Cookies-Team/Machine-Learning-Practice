@@ -64,7 +64,6 @@ if margin_h1 > margin_h2:
 else:
     print("Hyperplane 2 has a larger margin.")
 
-# (d) Best Separating Hyperplane
 print("\n(d) Best Separating Hyperplane:")
 print(f"The optimal hyperplane is: {w[0]:.2f}x + {w[1]:.2f}y + {b:.2f} = 0")
 margin = 2 / np.linalg.norm(w)
