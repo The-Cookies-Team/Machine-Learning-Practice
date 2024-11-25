@@ -3,9 +3,9 @@ import numpy as np
 # === Part (a): MLE for means μ1 and μ2 ===
 
 # Data from Table 1
-x = np.array([1, 2, 7, 8, 2, 1])  # Data points
-P_C1_given_x = np.array([0.9, 0.7, 0.2, 0.1, 0.8, 0.6])  # P(C1|x)
-P_C2_given_x = np.array([0.1, 0.1, 0.7, 0.6, 0.1, 0.3])  # P(C2|x)
+x = np.array([2, 3, 7, 9, 2, 1])  # Data points
+P_C1_given_x = np.array([0.9, 0.8, 0.3, 0.1, 0.9, 0.8])  # P(C1|x)
+P_C2_given_x = np.array([0.1, 0.1, 0.7, 0.9, 0.1, 0.2])  # P(C2|x)
 
 # Weighted means (MLE)
 mu1 = np.sum(P_C1_given_x * x) / np.sum(P_C1_given_x)
@@ -20,10 +20,10 @@ print(f"MLE for μ2: {mu2:.2f}")
 # Given parameters
 x_target = 5
 mu1_fixed = 2
-mu2_fixed = 5
+mu2_fixed = 7
 sigma1 = sigma2 = 1
-P_C1 = P_C2 = 0.4  # Prior probabilities
-P_x_5 = 0.02  # Prior probability of x = 5
+P_C1 = P_C2 = 0.5  # Prior probabilities
+P_x_5 = 0.029  # Prior probability of x = 5
 
 
 # Gaussian likelihood function
