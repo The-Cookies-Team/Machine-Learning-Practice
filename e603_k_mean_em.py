@@ -1,7 +1,5 @@
 import numpy as np
 
-import numpy as np
-
 # Data from Table 2
 data = np.array([[0, 2], [1, 0], [1, 1], [4, 1], [3, 3]])  # x1  # x2  # x3  # x4  # x5
 
